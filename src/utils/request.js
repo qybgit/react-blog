@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { Navigate } from 'react-router-dom'
 
 const http = axios.create(
   {
@@ -6,8 +7,15 @@ const http = axios.create(
     timeout: 5000
   }
 )
+//请求
 http.interceptors.request.use(
   (config) => {
+    console.log("test")
+    const token = localStorage.getItem("blog-key")
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+
     return config
   }, (error) => {
     return Promise.reject(error)

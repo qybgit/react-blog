@@ -24,14 +24,20 @@ function Login() {
   const handChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
   }
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    loginStroe.setToken({
+    const { data } = await loginStroe.setToken({
       nickName: values.nickName,
       password: values.password,
     })
-
-    message.success('登陆成功')
+    if (data.code == 200) {
+      console.log('true')
+      message.success(data.msg)
+      localStorage.setItem('blog-key', JSON.stringify(data.data))
+    } else {
+      message.error(data.msg)
+    }
     navigate('/layout')
   }
   // const handleChick = () => {
@@ -57,7 +63,7 @@ function Login() {
             <input
               type="text"
               placeholder="Username"
-              name="username"
+              name="nickName"
               required="true"
               // pattern="[A-Za-z0-9]{8,}"
               title="请输入包含大写字母的不小于八位数"
