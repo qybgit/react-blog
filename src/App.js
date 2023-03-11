@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Layout from "./pages/Layout"
+import 'antd/dist/reset.css'
+import Login from '@/pages/Login'
+import { Button } from 'antd'
 
-function App() {
+function App () {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <BrowserRouter>
+        <div className="App">
+          <Routes>
+            <Route path="/lagout" element={<Layout />} />
+            <Route path="/" element={<Login />} />
+          </Routes>
+
+        </div>
+      </BrowserRouter>
+    </>
+
+
+
+
+  )
 }
 
-export default App;
+export default App
