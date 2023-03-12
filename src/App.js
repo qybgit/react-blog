@@ -11,8 +11,7 @@ function App () {
       <BrowserRouter>
         <div className="App">
           <Routes>
-
-            <Route path="/layout" element={<Layout />} />
+            <Route path="/" element={<Layout />} />
             <Route path="/login" element={<Login />} />
             <Route path="/add" element={<AuthRoute><AddArticle /></AuthRoute>} />
           </Routes>

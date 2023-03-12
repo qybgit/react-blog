@@ -58,7 +58,6 @@ function Login() {
       password: values.password,
       [e.target.name]: e.target.value,
     })
-    console.log(e.target.name, e.target.value)
   }
   return (
     <>
