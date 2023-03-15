@@ -10,7 +10,6 @@ const http = axios.create(
 //请求
 http.interceptors.request.use(
   (config) => {
-    console.log("test")
     const token = localStorage.getItem("blog-key")
     if (token) {
       config.headers.Authorization = `Bearer ${token}`

@@ -32,13 +32,12 @@ function Login() {
       password: values.password,
     })
     if (data.code == 200) {
-      console.log('true')
       message.success(data.msg)
       localStorage.setItem('blog-key', JSON.stringify(data.data))
     } else {
       message.error(data.msg)
     }
-    navigate('/layout')
+    navigate('/')
   }
   // const handleChick = () => {
   //   const { nickName, password } = values
