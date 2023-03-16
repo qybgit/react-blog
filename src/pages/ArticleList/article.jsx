@@ -4,7 +4,7 @@ import ReactPaginate from 'react-paginate'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-function Article() {
+function ArticleList() {
   const [articles, setArticle] = useState([])
   const [count, setcount] = useState(0)
   const [params, setParams] = useState({
@@ -13,23 +13,13 @@ function Article() {
   })
   useEffect(() => {
     async function ArticleList() {
-      setArticle([])
       const res = await http.post('/article/alls', {
         params,
       })
       setArticle(res.data.data)
-
-      console.log('结束')
     }
     ArticleList()
   }, [params])
-  useEffect(() => {
-    async function Count() {
-      const count = await http.get('/article/count')
-      setcount(count.data.data)
-    }
-    Count()
-  }, [])
 
   const pageCount = Math.ceil(count / params.pageSize)
   const pagesVisited = (params.page - 1) * params.pageSize
@@ -99,15 +89,13 @@ function Article() {
     </>
   )
 }
-export default Article
+export default ArticleList
 const ReactPage = styled.div`
   width: 100%;
   height: 100%;
   overflow: scroll;
   background-color: #fff;
   padding-top: 3em;
-  .Page-main {
-  }
   .Page-block {
     display: block;
     .Page-header {

@@ -4,8 +4,9 @@ import 'antd/dist/reset.css'
 import Login from '@/pages/Login'
 import AddArticle from "./pages/publishArticle"
 import { AuthRoute } from "./components/Auth"
-import Home from "./pages/Home"
-import Article from "./pages/Article/article"
+import Article from "./pages/Article"
+import Content from "./pages/content"
+import ArticleList from "./pages/ArticleList/article"
 import Tag from "./pages/Tag/tag"
 
 function App () {
@@ -15,12 +16,10 @@ function App () {
         <div className="App">
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Article />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/tag" element={<Tag />} />
+              <Route index element={<ArticleList />} />
+              <Route path="article/:id" element={<Content />}> </Route>
+              <Route path="tag" element={<Tag />} />
             </Route>
-
-
 
             <Route path="/login" element={<Login />} />
             <Route path="/add" element={<AuthRoute><AddArticle /></AuthRoute>} />
