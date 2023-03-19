@@ -14,13 +14,7 @@ function Login() {
     nickName: '',
     password: '',
   })
-  // const toastOptions = {
-  //   position: 'bottom-right',
-  //   autoClose: 8000,
-  //   pauseOnHover: true,
-  //   draggable: true,
-  //   theme: 'dark',
-  // }
+
   const handChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
   }
@@ -39,17 +33,7 @@ function Login() {
     }
     navigate('/')
   }
-  // const handleChick = () => {
-  //   const { nickName, password } = values
-  //   if (password == '') {
-  //     console.log('test')
-  //     toast.error('密码不能为空', toastOptions)
-  //     return false
-  //   } else if (nickName === '') {
-  //     toast.error('用户名不能为空', toastOptions)
-  //     return false
-  //   }
-  // }
+
   return (
     <>
       <FromContainer>

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { Outlet, Link } from 'react-router-dom'
 import { message, Popconfirm, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
+
 import {
   GithubFilled,
   WechatFilled,
@@ -18,10 +19,14 @@ function Layout() {
     const confirm = () => {
       console.log(localStorage.removeItem('blog-key'))
       message.success('退出成功')
-      navigate('/')
+      navigate('/index')
     }
     if (!token) {
-      return '未登录'
+      return (
+        <Link to="/login">
+          <Button>Go to login</Button>
+        </Link>
+      )
     } else {
       const { account } = JSON.parse(token)
       return (
@@ -54,8 +59,8 @@ function Layout() {
             <nav className="header-nav">
               <ul>
                 <li className="shoye">
-                  <Link to="/">
-                    <a href="/">
+                  <Link to="/index">
+                    <a>
                       <i></i>
                       首页
                     </a>
@@ -63,18 +68,18 @@ function Layout() {
                 </li>
                 <li>
                   <Link to="/tag">
-                    <a href="/">
+                    <a>
                       <i></i>标签
                     </a>
                   </Link>
                 </li>
                 <li>
-                  <a href="/">
+                  <a>
                     <i></i>分类
                   </a>
                 </li>
                 <li>
-                  <a href="/">
+                  <a>
                     <i></i>搜索
                   </a>
                 </li>

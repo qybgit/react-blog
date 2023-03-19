@@ -15,9 +15,7 @@ function Article() {
       setArticle(res.data.data)
     }
     Article()
-  }, [])
-  console.log(article.content)
-  // const content = marked(article.content)
+  }, []) // const content = marked(article.content)
 
   return (
     <>

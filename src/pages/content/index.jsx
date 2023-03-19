@@ -2,9 +2,140 @@ import { http } from '@/utils'
 import { useParams } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { marked } from 'marked'
+import { Button, Form, Input, InputNumber, Modal, message } from 'antd'
 import ReactMarkdown from 'react-markdown'
-import { Button, Input, Comment, List } from 'antd'
+import { values } from 'mobx'
+//评论组件
+function Comment({ comment, articleId }) {
+  const [replying, setReolying] = useState(false)
+  const [replyContent, setReplyContent] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [compentE, setCommentE] = useState({}) //用来延迟加载评论
+  const [open, setOpen] = useState(false)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+  const [form] = Form.useForm()
+  const commentParam = {
+    content: '',
+    article_id: articleId,
+    parent_id: comment.id,
+    level: 2,
+  }
+  useEffect(() => {
+    setCommentE(comment)
+    setIsLoading(false)
+  }, [])
+  const handleSubmit = (e) => {
+    e.preventDefault()
+  }
+  if (isLoading) {
+    return <div>评论加载中</div>
+  } //延迟加载
+  const onFinish = async (values) => {
+    const token = localStorage.getItem('blog-key')
+    if (token == null) {
+      // setOpen(true)
+      message.error('请登录后评论')
+    } else {
+      commentParam.content = values.text
+      console.log(commentParam.content)
+      const res = await http.post('/comment/add', commentParam)
+      console.log(res.data)
+      if (res.code == 200) {
+        message.success('评论成功')
+      } else {
+        message.error(res.data.msg)
+        if (res.data.code == 407) {
+          localStorage.removeItem('blog-key')
+        }
+      }
+    }
+  } //表单提交
+  const isShowModal = () => {}
+  const handleCancel = () => {
+    setOpen(false)
+  }
+  const handleOk = () => {
+    form.submit()
+    setConfirmLoading(true)
+    setTimeout(() => {
+      setOpen(false)
+      setConfirmLoading(false)
+    }, 2000)
+  } //
+  const modalFinish = (values) => {
+    console.log(values)
+  }
+  return (
+    <div className="comment">
+      <h4>{comment.toUser.nickName}</h4>
+      <p>{comment.content}</p>
+      <button onClick={() => setReolying(!replying)}>
+        {replying ? '取消评论' : '评论'}
+      </button>
+      <div>
+        {replying && (
+          <Form
+            name="nest-messages"
+            onFinish={onFinish}
+            style={{
+              maxWidth: 600,
+            }}>
+            <Form.Item
+              name="text"
+              label="回复内容"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}>
+              <Input.TextArea />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                回复
+              </Button>
+            </Form.Item>
+          </Form>
+        )}
+      </div>
+      <div>
+        {/* <Modal
+          title="登陆后才能评论哦"
+          open={open}
+          onOk={handleOk}
+          confirmLoading={confirmLoading}
+          onCancel={handleCancel}>
+          <Form
+            name="nest-messages"
+            form={form}
+            onFinish={modalFinish}
+            style={{
+              maxWidth: 600,
+            }}>
+            <Form.Item
+              name="username"
+              label="用户名"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}>
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              label="密 码"
+              rules={[{ required: true }]}>
+              <Input.Password />
+            </Form.Item>
+          </Form>
+        </Modal> */}
+      </div>
+    </div>
+  )
+}
+
+//根组件
 function Content() {
   const [article, setArticle] = useState({})
   const [isLoading, setIsLoading] = useState(true)
@@ -21,17 +152,11 @@ function Content() {
     }
     ArticleList()
   }, [])
-  console.log(comments)
   if (isLoading) {
-    console.log('true')
     return <div>加载中</div>
   }
-  const readerComments = (comments) => {
-    ;<ArticleComment>
-      {comments.map((comment) => {
-        ;<Comment key={comment.id}></Comment>
-      })}
-    </ArticleComment>
+  const readerComments = (comment) => {
+    return <ArticleComment></ArticleComment>
   }
 
   return (
@@ -68,6 +193,16 @@ function Content() {
           <footer className="Page-footer">
             <div></div>
           </footer>
+        </div>
+        <div>
+          {comments ? (
+            comments.map((comment) => (
+              <Comment articleId={article.id} comment={comment}></Comment>
+            ))
+          ) : (
+            <div>null</div>
+          )}
+          <div>comment</div>
         </div>
       </ArtcileCotainer>
     </>

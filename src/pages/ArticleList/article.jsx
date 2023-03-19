@@ -16,6 +16,8 @@ function ArticleList() {
       const res = await http.post('/article/alls', {
         params,
       })
+      const c = await http.get('/article/count')
+      setcount(c.data.data)
       setArticle(res.data.data)
     }
     ArticleList()
@@ -25,7 +27,6 @@ function ArticleList() {
   const pagesVisited = (params.page - 1) * params.pageSize
   const changePage = ({ selected }) => {
     setParams({ ...params, page: selected + 1 })
-    console.log(params.page)
   }
   return (
     <>
