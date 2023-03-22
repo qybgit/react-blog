@@ -14,8 +14,6 @@ import {
   Spin,
   List,
   Avatar,
-  Divider,
-  Tag,
 } from 'antd'
 import ReactMarkdown from 'react-markdown'
 //评论组件
@@ -36,7 +34,7 @@ function CommentList({ comment, articleId }) {
     setCommentE(comment)
     setIsLoading(false)
   }, [])
-
+  const commentName = comment.toUser.nickName
   if (isLoading) {
     return (
       <div>
@@ -46,7 +44,6 @@ function CommentList({ comment, articleId }) {
       </div>
     )
   } //延迟加载
-  const commentName = commentE.toUser.nickName
   const onFinish = async (values) => {
     const token = localStorage.getItem('blog-key')
     if (token == null) {
@@ -56,7 +53,7 @@ function CommentList({ comment, articleId }) {
       const res = await http.post('/comment/add', commentParam)
       if (res.data.code == 200) {
         message.success('评论成功')
-        window.location.reload()
+        commentParam.id = res.data.data
       } else {
         message.error(res.data.msg)
         if (res.data.code == 407) {
@@ -70,24 +67,21 @@ function CommentList({ comment, articleId }) {
     <ListComment>
       <div className="comment">
         {/* <p>{comment.content}</p> */}
-        <div className="listButton">
-          <button
-            onClick={() => setReolying(!replying)}
-            style={{ border: 'none', paddingLeft: 3 }}>
-            {replying ? (
-              <div>
-                <MessageOutlined style={{}}></MessageOutlined>
-                <div style={{ fontSize: 0.8 }}> 取消</div>
-              </div>
-            ) : (
-              <div>
-                <MessageOutlined style={{}}></MessageOutlined>
-                <div> </div>
-              </div>
-            )}
-          </button>
-        </div>
-
+        <button
+          onClick={() => setReolying(!replying)}
+          style={{ border: 'none', paddingLeft: 3 }}>
+          {replying ? (
+            <div>
+              <MessageOutlined style={{}}></MessageOutlined>
+              <div> 取消评论</div>
+            </div>
+          ) : (
+            <div>
+              <MessageOutlined style={{}}></MessageOutlined>
+              <div> 评论</div>
+            </div>
+          )}
+        </button>
         <div>
           {replying && (
             <Form
@@ -115,6 +109,7 @@ function CommentList({ comment, articleId }) {
                   htmlType="submit"
                   style={{
                     backgroundColor: '#fbf7fb87F',
+                    color: '#333',
                   }}>
                   发布
                 </Button>
@@ -123,10 +118,10 @@ function CommentList({ comment, articleId }) {
           )}
         </div>
         <div>
-          {commentE.children && commentE.children.length > 0 ? (
+          {comment.children && comment.children.length > 0 ? (
             <List
               itemLayout="horizontal"
-              dataSource={commentE.children}
+              dataSource={comment.children}
               split={true}
               renderItem={(comment, index) => {
                 return (
@@ -233,8 +228,8 @@ function Content() {
                 </div>
               </div>
             </header>
-
-            <div className="page-body">
+            //文章内容
+            <div className="Page-body">
               <p>
                 <em>
                   <strong>BY Yuan Bo</strong>
@@ -245,45 +240,12 @@ function Content() {
             <div className="content">
               <ReactMarkdown>{content}</ReactMarkdown>
             </div>
-
-            <footer className="page-footer">
+            <footer className="Page-footer">
               <div></div>
             </footer>
-            <div className="page-tags">
-              <Space style={{ fontSize: 20 }}>
-                <div>分类:</div>
-                <div>
-                  <Tag
-                    color="orange"
-                    style={{ fontSize: '18px', padding: '8px' }}>
-                    {article.category.category_name}
-                  </Tag>
-                </div>
-              </Space>
-              <Space style={{ fontSize: 18 }}>
-                <div>标签：</div>
-                {article.tags && article.tags.length > 0 ? (
-                  <div>
-                    {article.tags.map((tag) => (
-                      <Tag
-                        color="orange"
-                        style={{ fontSize: '18px', padding: '8px' }}>
-                        {tag.tag_Name}
-                      </Tag>
-                    ))}
-                  </div>
-                ) : (
-                  <></>
-                )}
-              </Space>
-            </div>
           </div>
           {comments && comments.length > 0 ? (
             <div className="List" style={{ padding: 3 }}>
-              <Divider orientation="left" style={{}}>
-                <h2>全部评论</h2>
-              </Divider>
-
               <Card>
                 <List
                   itemLayout="horizontal"
@@ -322,14 +284,9 @@ function Content() {
               </Card>
             </div>
           ) : (
-            <>
-              <Divider orientation="left" style={{ padding: 3 }}>
-                <h2>评论</h2>
-              </Divider>
-              <Card>
-                <div>还没有评论，快来评论吧！</div>
-              </Card>
-            </>
+            <Card>
+              <div>还没有评论，快来评论吧！</div>
+            </Card>
           )}
         </div>
       </ArtcileCotainer>
@@ -391,7 +348,7 @@ const ArtcileCotainer = styled.div`
         }
       }
     }
-    .page-body {
+    .Page-body {
       p {
         display: block;
         font-size: 1.25em;
@@ -418,13 +375,8 @@ const ArtcileCotainer = styled.div`
     .content {
       font-size: 1.5em;
       text-align: justify;
-      padding: 2em;
     }
-    .page-tags {
-      font-size: 15px;
-      padding: 3em;
-    }
-    .page-footer {
+    .Page-footer {
       display: flex;
       flex-direction: column;
       div {
@@ -436,6 +388,10 @@ const ArtcileCotainer = styled.div`
     }
   }
 `
+const ArticleComment = styled.div`
+  margin-top: 50px;
+  background-color: #fff;
+`
 const Size = styled.div`
   font-size: 1em;
 `
@@ -446,27 +402,17 @@ const Sizes = styled.div`
 `
 const ListComment = styled.div`
   background-color: #f7f8fab3;
-  .comment {
-    .listButton {
-      padding-right: -1;
-    }
-  }
 `
 const CommentFlex = styled.div`
   display: flex;
-  .left {
-  }
-  .right {
-    padding-left: 1em;
-    padding-top: 2em;
-  }
+
   align-items: center;
   .huifu {
     font-size: 15px;
     display: flex;
     align-items: center;
     h3 {
-      padding: 0 0.5em;
+      padding: 0.5em;
     }
     .span {
       display: flex;

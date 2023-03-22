@@ -10,6 +10,7 @@ class LoginStore {
 
     const res = await http.post('http://localhost:8081/login', { nickName, password })
     this.token = res.data.token
+    console.log(res.data.msg)
     return res
 
   }

@@ -2,10 +2,8 @@ import logo from '@/asstes/login.png'
 import styled from 'styled-components'
 import { Button, message } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { useStroe } from '@/store/index'
 import LoginStore from '@/store/login.Store'
 import { useNavigate } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
 
 function Login() {
   const loginStroe = new LoginStore()
@@ -31,7 +29,7 @@ function Login() {
     } else {
       message.error(data.msg)
     }
-    navigate('/')
+    navigate('/index')
   }
 
   return (

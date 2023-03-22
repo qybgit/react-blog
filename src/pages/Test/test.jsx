@@ -6,14 +6,16 @@ function Test() {
     content: 'ddddd',
     article_id: 1,
     parent_id: 0,
-    level: 1,
+    level: 2,
   }
   const test = async () => {
-    const res = await http.post('/comment/add', commentParam)
+    const res = await http.post('/article/1')
     console.log(res.data)
   }
+  const A = []
   return (
     <>
+      {A ? <div>true</div> : <div>false</div>}
       <button onClick={test}>test</button>
     </>
   )
