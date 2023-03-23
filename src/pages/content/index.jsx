@@ -16,6 +16,7 @@ import {
   Avatar,
   Divider,
   Tag,
+  Empty,
 } from 'antd'
 import ReactMarkdown from 'react-markdown'
 //评论组件
@@ -187,7 +188,6 @@ function Content() {
   useEffect(() => {
     async function ArticleList() {
       const res = await http.post(`/article/${id}`)
-      console.log(res.data)
       setArticle(res.data.data)
       setIsLoading(false)
       setContent(res.data.data.articleBodyVo.content)
@@ -327,7 +327,7 @@ function Content() {
                 <h2>评论</h2>
               </Divider>
               <Card>
-                <div>还没有评论，快来评论吧！</div>
+                <Empty description="还没有评论，快来评论吧！"></Empty>
               </Card>
             </>
           )}

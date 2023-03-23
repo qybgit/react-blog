@@ -74,9 +74,11 @@ function Layout() {
                   </Link>
                 </li>
                 <li>
-                  <a>
-                    <i></i>分类
-                  </a>
+                  <Link to="/category">
+                    <a>
+                      <i></i>分类
+                    </a>
+                  </Link>
                 </li>
                 <li>
                   <a>
