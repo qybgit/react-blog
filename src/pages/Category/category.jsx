@@ -37,7 +37,9 @@ function Category() {
               <Divider style={{ fontSize: '2em' }}>Cateegory</Divider>
             </div>
             <div className="count">
-              <h3>{`目前总计为 ${categorys.length} 个标签`}</h3>
+              <h3>{`目前总计为 ${
+                categorys ? categorys.length : null
+              } 个标签`}</h3>
             </div>
 
             <div className="box-category">

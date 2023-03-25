@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { http } from '@/utils'
 import styled from 'styled-components'
 import { Select, Divider, Empty, Card } from 'antd'
-import { Link } from 'react-router-dom'
-
+import { Link, NavLink } from 'react-router-dom'
 function Tag() {
   const [tags, setTags] = useState([])
   const [alink, setAlink] = useState('')
@@ -43,15 +42,18 @@ function Tag() {
               <Divider style={{ fontSize: '2em' }}>Tags</Divider>
             </div>
             <div className="count">
-              <h3>{`目前总计为 ${count} 个标签`}</h3>
+              <h3>{`目前总计为 ${
+                tags && tags.length > 0 ? count : null
+              } 个标签`}</h3>
             </div>
+
             <div className="box-tag">
               {tags && tags.length > 0 ? (
                 <>
                   {tags.map((tag) => (
                     <div className="tag">
                       <span>
-                        <Link>
+                        <NavLink to={`/tag/${tag.id}`}>
                           <a
                             style={{
                               color:
@@ -64,7 +66,7 @@ function Tag() {
                             onMouseLeave={() => handleMove()}>
                             {`${tag.tag_Name}(${tag.count})`}
                           </a>
-                        </Link>
+                        </NavLink>
                       </span>
                     </div>
                   ))}

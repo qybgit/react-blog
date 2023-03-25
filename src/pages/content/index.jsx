@@ -19,10 +19,10 @@ import {
   Empty,
 } from 'antd'
 import ReactMarkdown from 'react-markdown'
+import { set } from 'mobx'
 //评论组件
 function CommentList({ comment, articleId }) {
   const [replying, setReolying] = useState(false)
-  const [replyContent, setReplyContent] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [commentE, setCommentE] = useState({}) //用来延迟加载评论
   const [form] = Form.useForm()
@@ -36,6 +36,10 @@ function CommentList({ comment, articleId }) {
   useEffect(() => {
     setCommentE(comment)
     setIsLoading(false)
+    return () => {
+      setCommentE({})
+      setIsLoading(null)
+    }
   }, [])
 
   if (isLoading) {
@@ -95,7 +99,7 @@ function CommentList({ comment, articleId }) {
               name="nest-messages"
               onFinish={onFinish}
               style={{
-                maxWidth: 600,
+                maxWidth: 800,
               }}>
               <Form.Item
                 name="text"
@@ -105,20 +109,23 @@ function CommentList({ comment, articleId }) {
                     required: true,
                   },
                 ]}>
-                <Input.TextArea />
+                <Input.TextArea className="my-input" />
               </Form.Item>
               <Form.Item
                 style={{
                   paddingLeft: 10,
                 }}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{
-                    backgroundColor: '#fbf7fb87F',
-                  }}>
-                  发布
-                </Button>
+                <div className="pushButton">
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    style={{
+                      margin: '1em 0',
+                      backgroundColor: '#555',
+                    }}>
+                    发布
+                  </Button>
+                </div>
               </Form.Item>
             </Form>
           )}
@@ -174,6 +181,137 @@ function CommentList({ comment, articleId }) {
         </div>
       </div>
     </ListComment>
+  )
+}
+//根评论
+function CommentOneContainer({ articleId }) {
+  const [replying, setRepying] = useState(false)
+  const commentParam = {
+    content: '',
+    article_id: articleId,
+    parent_id: 0,
+    level: 1,
+  }
+  const onFinish = async (values) => {
+    const token = localStorage.getItem('blog-key')
+    if (token == null) {
+      message.error('请登录后评论')
+    } else {
+      commentParam.content = values.text
+      const res = await http.post('/comment/add', commentParam)
+      if (res.data.code == 200) {
+        message.success('评论成功')
+        window.location.reload()
+      } else {
+        message.error(res.data.msg)
+        if (res.data.code == 407) {
+          localStorage.removeItem('blog-key')
+          window.location.reload() //页面刷新
+        }
+      }
+    }
+  } //表单提交
+  const handleChange = (e) => {
+    setRepying(e)
+  }
+  const handleClickChange = () => {
+    setRepying()
+  }
+  const username = () => {
+    const token = localStorage.getItem('blog-key')
+    if (!token) {
+      return (
+        <>
+          {' '}
+          <div className="left">
+            <Avatar
+              src={`https://joesch.moe/api/v1/random?key=1}`}
+              alt="avatar"
+              size="large"
+              gap={8}></Avatar>
+          </div>
+          <div className="right">
+            <div>
+              <h3>{'未登录'}</h3>
+            </div>
+          </div>
+        </>
+      )
+    } else {
+      const { account } = JSON.parse(token)
+      return (
+        <>
+          <div className="left">
+            <Avatar
+              src={`https://joesch.moe/api/v1/random?key=1}`}
+              alt="avatar"
+              size="large"
+              gap={8}></Avatar>
+          </div>
+          <div className="right">
+            <div>
+              <h3>{account}</h3>
+            </div>
+          </div>
+        </>
+      )
+    }
+  }
+  return (
+    <CommentOne>
+      <div className="box">
+        <Card
+          style={{
+            width: '100%',
+            height: '200px',
+            backgroundColor: ' #f7f8fab3',
+          }}>
+          <div className="box-from">
+            <div className="box-left">
+              {' '}
+              <CommentFlexPush>{username()}</CommentFlexPush>
+            </div>
+            <div className="box-right">
+              <Form
+                name="nest-messages"
+                onClick={() => handleChange(true)}
+                onFinish={onFinish}
+                style={{
+                  padding: '1em 3em',
+                }}>
+                <Form.Item
+                  name="text"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}>
+                  <Input.TextArea
+                    onFocus={() => handleChange(true)}
+                    placeholder="输入评论"
+                  />
+                </Form.Item>
+                {replying ? (
+                  <div className="box-push">
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      style={{
+                        backgroundColor: '#555',
+                        width: '5em',
+                      }}>
+                      发布
+                    </Button>
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </Form>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </CommentOne>
   )
 }
 
@@ -278,10 +416,13 @@ function Content() {
               </Space>
             </div>
           </div>
+          <div className="List-one">
+            <CommentOneContainer articleId={article.id}></CommentOneContainer>
+          </div>
           {comments && comments.length > 0 ? (
             <div className="List" style={{ padding: 3 }}>
               <Divider orientation="left" style={{}}>
-                <h2>全部评论</h2>
+                <h2>评论</h2>
               </Divider>
 
               <Card>
@@ -450,6 +591,11 @@ const ListComment = styled.div`
     .listButton {
       padding-right: -1;
     }
+
+    .pushButton {
+      display: flex;
+      justify-content: flex-end;
+    }
   }
 `
 const CommentFlex = styled.div`
@@ -473,5 +619,25 @@ const CommentFlex = styled.div`
       align-items: center;
       justify-content: center;
     }
+  }
+`
+const CommentOne = styled.div`
+  .box {
+    .box-from {
+      .box-right {
+        .box-push {
+          display: flex;
+          justify-content: flex-end;
+          padding-right: 3em;
+        }
+      }
+    }
+  }
+`
+const CommentFlexPush = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  .right {
+    padding-left: 1em;
   }
 `

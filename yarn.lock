@@ -7343,6 +7343,11 @@
   "resolved" "https://registry.npmmirror.com/mobx/-/mobx-6.8.0.tgz"
   "version" "6.8.0"
 
+"momnet@^2.29.1":
+  "integrity" "sha512-V+t7Caf5gYIhxMrFKhj0JQrOWFXrhzpv/SiZGKXDTGwZo485ysUx7sQ4f/2nO3YF6q0vEfQM/+wBnSHynxo5tQ=="
+  "resolved" "https://registry.npmmirror.com/momnet/-/momnet-2.29.1.tgz"
+  "version" "2.29.1"
+
 "mri@^1.1.0":
   "integrity" "sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA=="
   "resolved" "https://registry.npmmirror.com/mri/-/mri-1.2.0.tgz"

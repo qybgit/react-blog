@@ -21,6 +21,10 @@ function ArticleList() {
       setArticle(res.data.data)
     }
     ArticleList()
+    return () => {
+      setArticle([])
+      setcount(null)
+    }
   }, [params])
 
   const pageCount = Math.ceil(count / params.pageSize)

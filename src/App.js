@@ -12,6 +12,8 @@ import Test from "./pages/Test/test"
 import Category from "./pages/Category/category"
 import Error from "./pages/Error/error"
 import CategoryArticle from "./pages/Category/catrgoryArticle"
+import TagArticle from "./pages/Tag/tagArticle"
+import Serach from "./pages/Serach/serach"
 function App () {
   return (
     <>
@@ -24,6 +26,7 @@ function App () {
               <Route path="tag" element={<Tag />} />
               <Route path="category" element={<Category />} />
               <Route path="category/:id" element={<CategoryArticle />} />
+              <Route path="tag/:id" element={<TagArticle />} />
             </Route>
             <Route path="/test" element={<Test />}></Route>
             <Route path="/login" element={<Login />} />
