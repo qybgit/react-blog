@@ -28,7 +28,6 @@ function SearchModal({ onClose }) {
       } else {
         setArticle(res.data.data)
       }
-      console.log(res)
     }
     serachF()
     return () => {
@@ -92,27 +91,6 @@ function SearchModal({ onClose }) {
                 })}
               </>
             ) : (
-              // <List
-              //   itemLayout="horizontalv"
-              //   dataSource={articles}
-              //   split={true}
-              //   renderItem={(article) => {
-              //     return (
-              //       <>
-              //         <div className="box-list">
-              //           <div>
-              //             <Link to={`/article/${article.id}`}>
-              //               {' '}
-              //               <a className="box-a">
-              //                 <CalendarOutlined style={{ padding: '1em' }} />
-              //                 <h3>{article.title}</h3>
-              //               </a>
-              //             </Link>
-              //           </div>
-              //         </div>
-              //       </>
-              //     )
-              //   }}></List>
               <></>
             )}
           </div>
@@ -185,7 +163,7 @@ function Layout() {
             <nav className="header-nav">
               <ul>
                 <li className="shoye">
-                  <Link to="/index">
+                  <Link to="/">
                     <a>
                       <i></i>
                       首页
@@ -219,7 +197,7 @@ function Layout() {
                   </a>
                 </li>
                 <li>
-                  <a href="/">
+                  <a href="/about">
                     <i></i>关于
                   </a>
                 </li>
@@ -239,39 +217,28 @@ function Layout() {
                   href="https://github.com/qybgit"
                   rel="noopener me"
                   target="_blank">
-                  <i>
-                    <GithubFilled
-                      className="Git"
-                      style={{ color: '#222', padding: 0 }}
-                    />{' '}
-                    GitHub
-                  </i>
+                  <GithubFilled className="Git" style={{ color: '#222' }} />
+                  <i>GitHub</i>
                 </a>
               </span>
               <span>
                 <a href="/">
-                  <i>
-                    <WechatFilled style={{ color: '#222', padding: 0 }} />
-                    WeChat
-                  </i>
+                  <WechatFilled style={{ color: '#222' }} />
+
+                  <i>WeChat</i>
                 </a>
               </span>
               <span>
                 <a href="/">
-                  <i>
-                    <QqSquareFilled style={{ color: '#222', padding: 0 }} />
-                    QQ
-                  </i>
+                  <QqSquareFilled style={{ color: '#222' }} />
+                  <i>QQ</i>
                 </a>
               </span>
               <span>
                 <a href="/">
-                  <i>
-                    <TwitterSquareFilled
-                      style={{ color: '#222', padding: 0 }}
-                    />
-                    Twitter
-                  </i>
+                  <TwitterSquareFilled style={{ color: '#222' }} />
+
+                  <i>Twitter</i>
                 </a>
               </span>
             </div>
@@ -299,6 +266,7 @@ const SiteContainer = styled.div`
 
   .left-Container {
     width: 20%;
+    height: 100%;
     padding: 1em 0;
 
     .header {
@@ -384,20 +352,21 @@ const SiteContainer = styled.div`
         width: 100%;
         height: 100%;
         span {
-          margin: 5px 0 0;
+          padding: 5px 0 0;
           width: 50%;
+          height: 50%;
           text-align: center;
-          i {
-            text-align: center;
-          }
 
           a {
             text-decoration: none;
             text-align: center;
-            height: 50%;
             border-bottom: 0;
             border-radius: 4px;
             display: block;
+            color: rgb(34 34 34);
+            i {
+              font-size: 2px;
+            }
           }
         }
       }
@@ -421,6 +390,7 @@ const SiteContainer = styled.div`
   }
   .right-Container {
     display: flex;
+    justify-content: center;
     margin-left: 20px;
     width: 80%;
     height: 100vh;

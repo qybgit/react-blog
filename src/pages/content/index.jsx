@@ -141,11 +141,9 @@ function CommentList({ comment, articleId }) {
                   <>
                     <CommentFlex>
                       <div>
-                        <Avatar
-                          src={`https://joesch.moe/api/v1/random?key=${index}`}
-                          alt="avatar"
-                          size="large"
-                          gap={8}></Avatar>
+                        <Avatar alt="avatar" size="large" gap={8}>
+                          {comment.toUser.nickName}
+                        </Avatar>
                       </div>
                       <div>
                         <div className="huifu">
@@ -246,7 +244,9 @@ function CommentOneContainer({ articleId }) {
               src={`https://joesch.moe/api/v1/random?key=1}`}
               alt="avatar"
               size="large"
-              gap={8}></Avatar>
+              gap={8}>
+              {account}
+            </Avatar>
           </div>
           <div className="right">
             <div>
@@ -439,7 +439,9 @@ function Content() {
                               src={`https://joesch.moe/api/v1/random?key=${index}`}
                               alt="avatar"
                               size="large"
-                              gap={8}></Avatar>
+                              gap={8}>
+                              {comment.toUser.nickName}
+                            </Avatar>
                           </div>
 
                           <div className="right">
@@ -479,10 +481,6 @@ function Content() {
 }
 export default Content
 const ArtcileCotainer = styled.div`
-  .box::-webkit-scrollbar-thumb {
-    background: #ccc; // 滑块颜色
-    border-radius: 5px; // 滑块圆角
-  }
   width: 100%;
   height: 100%;
   overflow: scroll;
@@ -536,11 +534,9 @@ const ArtcileCotainer = styled.div`
       p {
         display: block;
         font-size: 1.25em;
-        margin-block-start: 1em;
-        margin-block-end: 1em;
+
         margin-inline-start: 0px;
         margin-inline-end: 0px;
-        margin: 0 0 20px;
         padding: 0 1em;
       }
       .button {

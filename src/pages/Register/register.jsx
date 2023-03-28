@@ -4,34 +4,41 @@ import styled from 'styled-components'
 import LoginStore from '@/store/login.Store'
 import { useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
-function Login() {
+import { http } from '@/utils'
+function Register() {
   const [from] = Form.useForm()
   const passwordPattern = /^(?=.*[A-Z]).{8,}$/
 
   const loginStroe = new LoginStore()
   const navigate = useNavigate()
+  const [isone, setIsone] = useState(false)
 
   const [values, setValues] = useState({
     nickName: '',
     password: '',
+    passwordAgain: '',
   })
 
   const handlePassword = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
   }
   const onFinishDate = async (e) => {
-    if (false) {
+    if (!passwordPattern.test(values.password)) {
+      message.error('密码需包含大写字母')
     } else {
-      const { data } = await loginStroe.setToken({
-        nickName: values.nickName,
-        password: values.password,
-      })
-      if (data.code == 200) {
-        message.success(data.msg)
-        localStorage.setItem('blog-key', JSON.stringify(data.data))
-        navigate('/')
+      if (values.password === values.passwordAgain) {
+        const { data } = await http.post('/register', {
+          nickName: values.nickName,
+          password: values.password,
+        })
+        if (data.code == 200) {
+          message.success(data.msg)
+          navigate('/login')
+        } else {
+          message.error(data.msg)
+        }
       } else {
-        message.error(data.msg)
+        message.error('密码不一致')
       }
     }
   }
@@ -46,7 +53,7 @@ function Login() {
               size={120}
               gap={5}
               style={{ backgroundColor: ' #333' }}>
-              YuanBo Blog
+              注册
             </Avatar>
           </div>
 
@@ -60,7 +67,12 @@ function Login() {
               rules={[
                 {
                   required: true,
-                  message: 'Please input your Username!',
+                  message: '输入用户名!',
+                },
+                {
+                  min: 6,
+                  max: 12,
+                  message: '用户名长度不小6',
                 },
               ]}>
               <Input
@@ -75,7 +87,12 @@ function Login() {
               rules={[
                 {
                   required: true,
-                  message: '请输入包含大写字母的不小于八位数',
+                  message: '请输入密码',
+                },
+                {
+                  min: 8,
+                  max: 15,
+                  message: '输入密码长度不得小于8',
                 },
               ]}>
               <Input
@@ -87,8 +104,39 @@ function Login() {
                 onChange={(e) => handlePassword(e)}
               />
             </Form.Item>
-
             <Form.Item>
+              <Form.Item
+                name="passwordAgain"
+                dependencies={['password']}
+                rules={[
+                  {
+                    required: true,
+                    message: '确认密码',
+                  },
+                  {
+                    min: 8,
+                    max: 15,
+                    message: '输入密码长度不得小于8',
+                  },
+                  // ({ getFieldValue }) => ({
+                  //   validator(_, value) {
+                  //     if (!value || getFieldValue('password') === value) {
+                  //       return Promise.resolve()
+                  //     }
+                  //     return Promise.reject(new Error('两次输入的密码不一致'))
+                  //   },
+                  // }),
+                ]}>
+                <Input
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  type="password"
+                  name="passwordAgain"
+                  placeholder="确认密码"
+                  title="确认密码"
+                  onChange={(e) => handlePassword(e)}
+                  validateTrigger={'onSubmit'}
+                />
+              </Form.Item>
               <Form.Item name="remember" valuePropName="checked" noStyle>
                 <Checkbox>Remember me</Checkbox>
               </Form.Item>
@@ -102,9 +150,9 @@ function Login() {
                 type="primary"
                 htmlType="submit"
                 className="login-form-button">
-                登陆
+                注册
               </Button>
-              Or <a href="/register">注册</a>
+              Or <a href="">登陆</a>
             </div>
           </Form>
         </Card>
@@ -112,7 +160,7 @@ function Login() {
     </FromContainer>
   )
 }
-export default Login
+export default Register
 const FromContainer = styled.div`
   width: 100vw;
   height: 100vh;

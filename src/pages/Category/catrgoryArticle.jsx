@@ -76,8 +76,8 @@ function CategoryArticle() {
 export default CategoryArticle
 const Container = styled.div`
   overflow: scroll;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   .box-empty {
     padding: 2em;
     width: 100%;

@@ -79,17 +79,20 @@ function ArticleList() {
               </div>
             ))}
         </div>
-        <ReactPaginate
-          previousLabel={'上一页'}
-          nextLabel={'下一页'}
-          pageCount={pageCount}
-          onPageChange={changePage}
-          containerClassName={'pagination'}
-          previousLinkClassName={'pagination__link'}
-          nextLinkClassName={'pagination__link'}
-          disabledClassName={'pagination__link--disabled'}
-          activeClassName={'pagination__link--active'}
-        />
+        <div className="Page-paginte">
+          <ReactPaginate
+            style={{ padding: '20px' }}
+            previousLabel={'上一页'}
+            nextLabel={'下一页'}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={'pagination'}
+            previousLinkClassName={'pagination__link'}
+            nextLinkClassName={'pagination__link'}
+            disabledClassName={'pagination__link--disabled'}
+            activeClassName={'pagination__link--active'}
+          />
+        </div>
       </ReactPage>
     </>
   )
@@ -204,5 +207,30 @@ const ReactPage = styled.div`
   .pagination__link--disabled {
     color: #ccc;
     cursor: not-allowed;
+  }
+  .Page-paginte {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    li {
+      margin: 0 10px;
+      a {
+        color: #333;
+        text-decoration: none;
+        padding: 0 1em;
+        border-radius: 5px;
+      }
+      a:hover {
+        /* background-color: #555; */
+      }
+    }
   }
 `
