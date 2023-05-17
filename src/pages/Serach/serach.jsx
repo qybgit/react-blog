@@ -4,7 +4,7 @@ import styled from 'styled-components'
 function Serach() {
   return (
     <>
-      <SerachContainer>jj</SerachContainer>
+      <SerachContainer></SerachContainer>
     </>
   )
 }

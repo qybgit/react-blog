@@ -2,7 +2,6 @@ import { http } from '@/utils'
 import { useParams } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import VirtualList from 'rc-virtual-list'
 import { MessageOutlined } from '@ant-design/icons'
 import {
   Button,
@@ -18,8 +17,8 @@ import {
   Tag,
   Empty,
 } from 'antd'
-import ReactMarkdown from 'react-markdown'
-import { set } from 'mobx'
+import { Parser } from 'html-to-react'
+import parse from 'html-react-parser'
 //评论组件
 function CommentList({ comment, articleId }) {
   const [replying, setReolying] = useState(false)
@@ -321,15 +320,19 @@ function Content() {
   const [isLoading, setIsLoading] = useState(true)
   const [content, setContent] = useState('')
   const [comments, setComment] = useState([])
-  const [test, setTest] = useState(false)
   const { id } = useParams()
   useEffect(() => {
     async function ArticleList() {
       const res = await http.post(`/article/${id}`)
-      setArticle(res.data.data)
+      if (res.data.code == 200) {
+        setArticle(res.data.data)
+        setContent(res.data.data.articleBodyVo.content)
+        setComment(res.data.data.commentVo)
+      } else {
+        message.error(res.data.msg)
+      }
+
       setIsLoading(false)
-      setContent(res.data.data.articleBodyVo.content)
-      setComment(res.data.data.commentVo)
     }
     ArticleList()
     return () => {
@@ -338,144 +341,154 @@ function Content() {
       setContent('')
     }
   }, [])
-  if (isLoading) {
-    return (
-      <div>
-        <Space>
-          <Spin size="large"></Spin>
-        </Space>
-      </div>
-    )
+  // if (isLoading) {
+  //   return (
+  //     <div>
+  //       <Space>
+  //         <Spin size="large"></Spin>
+  //       </Space>
+  //     </div>
+  //   )
+  // }
+  const HtmlToReact = () => {
+    return <Html>{parse(content)}</Html>
   }
-
+  console.log(article)
   return (
     <>
-      <ArtcileCotainer>
-        <div className="box">
-          <div className="Page-block" key={article.id}>
-            <header className="Page-header">
-              <h2>
-                <a>{article.title}</a>
-              </h2>
-              <div className="post-container">
-                <div className="post-meta">
-                  <span className="post-item">
-                    发表时间：{article.createDate}
-                  </span>
-                  <span className="post-item">
-                    更新于：{article.updateDate}
-                  </span>
-                  <span className="post-item">
-                    分类于：{article.category.category_name}
-                  </span>
-                </div>
-              </div>
-            </header>
-
-            <div className="page-body">
-              <p>
-                <em>
-                  <strong>BY Yuan Bo</strong>
-                </em>
-              </p>
-              <p>{article.summary}</p>
-            </div>
-            <div className="content">
-              <ReactMarkdown>{content}</ReactMarkdown>
-            </div>
-
-            <footer className="page-footer">
-              <div></div>
-            </footer>
-            <div className="page-tags">
-              <Space style={{ fontSize: 20 }}>
-                <div>分类:</div>
-                <div>
-                  <Tag
-                    color="orange"
-                    style={{ fontSize: '18px', padding: '8px' }}>
-                    {article.category.category_name}
-                  </Tag>
-                </div>
-              </Space>
-              <Space style={{ fontSize: 18 }}>
-                <div>标签：</div>
-                {article.tags && article.tags.length > 0 ? (
-                  <div>
-                    {article.tags.map((tag) => (
-                      <Tag
-                        color="orange"
-                        style={{ fontSize: '18px', padding: '8px' }}>
-                        {tag.tag_Name}
-                      </Tag>
-                    ))}
+      {Object.keys(article).length > 0 ? (
+        <ArtcileCotainer>
+          <div className="box">
+            <div className="Page-block" key={article.id}>
+              <header className="Page-header">
+                <h2>
+                  <a>{article.title}</a>
+                </h2>
+                <div className="post-container">
+                  <div className="post-meta">
+                    <span className="post-item">
+                      发表时间：{article.createDate}
+                    </span>
+                    <span className="post-item">
+                      更新于：{article.updateDate}
+                    </span>
+                    <span className="post-item">
+                      分类于：{article.category.category_name}
+                    </span>
                   </div>
-                ) : (
-                  <></>
-                )}
-              </Space>
-            </div>
-          </div>
-          <div className="List-one">
-            <CommentOneContainer articleId={article.id}></CommentOneContainer>
-          </div>
-          {comments && comments.length > 0 ? (
-            <div className="List" style={{ padding: 3 }}>
-              <Divider orientation="left" style={{}}>
-                <h2>评论</h2>
-              </Divider>
+                </div>
+              </header>
+              <div className="page-body">
+                <p>
+                  <em>
+                    <strong>BY Yuan Bo</strong>
+                  </em>
+                </p>
+                <p>{article.summary}</p>
+              </div>
+              <div className="content">
+                {/* <ReactMarkdown
+                renderers={{ html: HtmlToReact }}
+                source={content}></ReactMarkdown> */}
+                <HtmlToReact></HtmlToReact>
+              </div>
 
-              <Card>
-                <List
-                  itemLayout="horizontal"
-                  dataSource={comments} //根评论
-                  split={true} //分页线
-                  renderItem={(comment, index) => {
-                    return (
-                      <>
-                        <CommentFlex>
-                          <div className="left">
-                            <Avatar
-                              src={`https://joesch.moe/api/v1/random?key=${index}`}
-                              alt="avatar"
-                              size="large"
-                              gap={8}>
-                              {comment.toUser.nickName}
-                            </Avatar>
-                          </div>
-
-                          <div className="right">
-                            <div>
-                              <h3>{comment.toUser.nickName}</h3>
-                            </div>
-                            <div>
-                              <p>{comment.content}</p>
-                            </div>
-                          </div>
-                        </CommentFlex>
-                        <Sizes>
-                          <CommentList
-                            articleId={article.id}
-                            comment={comment}></CommentList>
-                        </Sizes>
-                      </>
-                    )
-                  }}
-                />
-              </Card>
+              <footer className="page-footer">
+                <div></div>
+              </footer>
+              <div className="page-tags">
+                <Space style={{ fontSize: 20 }}>
+                  <div>分类:</div>
+                  <div>
+                    <Tag
+                      color="orange"
+                      style={{ fontSize: '18px', padding: '8px' }}>
+                      {article.category.category_name}
+                    </Tag>
+                  </div>
+                </Space>
+                <Space style={{ fontSize: 18 }}>
+                  <div>标签：</div>
+                  {article.tags && article.tags.length > 0 ? (
+                    <div>
+                      {article.tags.map((tag) => (
+                        <Tag
+                          key={tag.id}
+                          color="orange"
+                          style={{ fontSize: '18px', padding: '8px' }}>
+                          {tag.tag_Name}
+                        </Tag>
+                      ))}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </Space>
+              </div>
             </div>
-          ) : (
-            <>
-              <Divider orientation="left" style={{ padding: 3 }}>
-                <h2>评论</h2>
-              </Divider>
-              <Card>
-                <Empty description="还没有评论，快来评论吧！"></Empty>
-              </Card>
-            </>
-          )}
-        </div>
-      </ArtcileCotainer>
+            <div className="List-one">
+              <CommentOneContainer articleId={article.id}></CommentOneContainer>
+            </div>
+            {/* {comments && comments.length > 0 ? (
+              <div className="List" style={{ padding: 3 }}>
+                <Divider orientation="left" style={{}}>
+                  <h2>评论</h2>
+                </Divider>
+
+                <Card>
+                  <List
+                    itemLayout="horizontal"
+                    dataSource={comments} //根评论
+                    split={true} //分页线
+                    renderItem={(comment, index) => {
+                      return (
+                        <>
+                          <CommentFlex>
+                            <div className="left">
+                              <Avatar
+                                src={`https://joesch.moe/api/v1/random?key=${index}`}
+                                alt="avatar"
+                                size="large"
+                                gap={8}>
+                                {comment.toUser.nickName}
+                              </Avatar>
+                            </div>
+
+                            <div className="right">
+                              <div>
+                                <h3>{comment.toUser.nickName}</h3>
+                              </div>
+                              <div>
+                                <p>{comment.content}</p>
+                              </div>
+                            </div>
+                          </CommentFlex>
+                          <Sizes>
+                            <CommentList
+                              articleId={article.id}
+                              comment={comment}></CommentList>
+                          </Sizes>
+                        </>
+                      )
+                    }}
+                  />
+                </Card>
+              </div>
+            ) : (
+              <>
+                <Divider orientation="left" style={{ padding: 3 }}>
+                  <h2>评论</h2>
+                </Divider>
+                <Card>
+                  <Empty description="还没有评论，快来评论吧！"></Empty>
+                </Card>
+              </>
+            )} */}
+          </div>
+        </ArtcileCotainer>
+      ) : (
+        <Spin size="large" />
+      )}
     </>
   )
 }
@@ -636,4 +649,8 @@ const CommentFlexPush = styled.div`
   .right {
     padding-left: 1em;
   }
+`
+const Html = styled.div`
+  white-space: pre-wrap;
+  white-space: pre-line;
 `

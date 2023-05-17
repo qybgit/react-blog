@@ -161,47 +161,44 @@ function Layout() {
               <p>努力做得更好</p>
             </div>
             <nav className="header-nav">
-              <ul>
-                <li className="shoye">
-                  <Link to="/">
-                    <a>
-                      <i></i>
-                      首页
+              <div className="header-ul">
+                <ul>
+                  <li>
+                    <Link to="/">
+                      <a>
+                        <span>首页</span>
+                      </a>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/tag">
+                      <span>标签</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/category">
+                      <span>分类</span>
+                    </Link>
+                  </li>
+                  {showSearch && <Overlay></Overlay>}
+                  <li ref={searchRef}>
+                    {showSearch && <SearchModal onClose={onShow}></SearchModal>}
+                    <a onClick={() => onShow(true)}>
+                      <span>搜索</span>
                     </a>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/tag">
-                    <a>
-                      <i></i>标签
+                  </li>
+                  <li>
+                    <a href="/">
+                      <span>发布</span>
                     </a>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/category">
-                    <a>
-                      <i></i>分类
+                  </li>
+                  <li>
+                    <a href="/about">
+                      <i></i>关于
                     </a>
-                  </Link>
-                </li>
-                {showSearch && <Overlay></Overlay>}
-                <li ref={searchRef}>
-                  {showSearch && <SearchModal onClose={onShow}></SearchModal>}
-                  <a onClick={() => onShow(true)}>
-                    <i></i>搜索{' '}
-                  </a>
-                </li>
-                <li>
-                  <a href="/">
-                    <i></i>发布
-                  </a>
-                </li>
-                <li>
-                  <a href="/about">
-                    <i></i>关于
-                  </a>
-                </li>
-              </ul>
+                  </li>
+                </ul>
+              </div>
             </nav>
           </header>
           {/* 下半部分 */}
@@ -258,11 +255,11 @@ export default Layout
 const SiteContainer = styled.div`
   height: 100vh;
   width: 100vw;
+  position: fixed;
   background-color: #f5f5f5;
   display: flex;
   margin: 0 auto;
   padding: 0 200px;
-  justify-content: space-between;
 
   .left-Container {
     width: 20%;
@@ -271,62 +268,79 @@ const SiteContainer = styled.div`
 
     .header {
       display: block;
-      background-color: #ffffff;
+      background-color: #fff;
       width: 100%;
       height: 55%;
       .header-brand {
         display: flex;
         width: 100%;
-        height: 35%;
+        height: 40%;
+        padding: 0;
+        margin: 0;
         background-color: #222;
         justify-content: center;
-        justify-items: center;
         flex-direction: column;
-        align-items: center;
+
+        text-align: center;
         a {
           width: 100%;
           color: #fff;
           text-decoration: none;
           font-size: 1rem;
-          padding: 5px;
           h1 {
             text-align: center;
           }
         }
         p {
+          width: 100%;
           color: #fff;
-          padding: 15px;
         }
       }
       .header-nav {
         display: block;
         width: 100%;
         height: 60%;
-        ul {
-          display: block;
-          list-style-type: none;
-          text-align: center;
-          line-height: 3;
-          width: 100%;
+        .header-ul {
           height: 100%;
-          margin: 0;
-          padding: 0;
-          li {
+          ul {
+            list-style-type: none;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+
             margin: 0;
             padding: 0;
-          }
-          li a {
-            text-decoration: none;
-            display: block;
-            color: #222;
-            width: 100%;
-          }
+            li {
+              flex: 1;
 
-          li a:hover {
-            background: #f5f5f5;
-          }
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              justify-items: center;
+            }
+            li a {
+              text-align: center;
+              display: flex;
+              justify-content: center;
+              justify-items: center;
+              text-decoration: none;
+              align-items: center;
+              color: #222;
+              width: 100%;
+              height: 100%;
+              span {
+                text-align: center;
+              }
+            }
 
-          font-size: 1rem;
+            li a:hover {
+              background: #f5f5f5;
+            }
+
+            font-size: 1em;
+          }
         }
       }
     }
@@ -393,7 +407,7 @@ const SiteContainer = styled.div`
     justify-content: center;
     margin-left: 20px;
     width: 80%;
-    height: 100vh;
+    height: 100%;
   }
 `
 const SearchContainer = styled.div`
